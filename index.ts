@@ -2,8 +2,9 @@
 import './style.css';
 import { routes } from './routes';
 import { updatedRoutes } from './updated-routes';
-
+import {findIndex, slice} from 'lodash';
 var L = require('leaflet');
+L.GeometryUtil = require('leaflet-geometryutil');
 
 import './MovingMarker.js';
 
@@ -47,6 +48,12 @@ const start = () => {
         route.features[route.features.length - 1].geometry.coordinates
       )
     );
+    setTimeout(() => {
+      const closest = L.GeometryUtil.closest(map, coordinates, cars[0].getLatLng(), true);
+      const index = findIndex(coordinates,coord => coord[0] === closest.lat &&   coord[1] === closest.lng);
+      const updatedCoords = slice(coordinates, index)
+      
+    }, 1000)
     cars.push(
       L.Marker.movingMarker(
         coordinates.map(coordinate => coordinate.reverse()),
